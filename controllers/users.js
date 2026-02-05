@@ -8,9 +8,11 @@ const {
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch((e) => res
-      .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-      .send({ message: e.message }));
+    .catch((e) =>
+      res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: "An error has occurred on the server." })
+    );
 };
 
 const createUser = (req, res) => {
@@ -24,7 +26,7 @@ const createUser = (req, res) => {
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: e.message });
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -42,7 +44,7 @@ const getUser = (req, res) => {
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: e.message });
+        .send({ message: "An error has occurred on the server." });
     });
 };
 module.exports = { getUsers, createUser, getUser };

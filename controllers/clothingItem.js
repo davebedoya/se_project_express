@@ -3,6 +3,7 @@ const {
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
+  UNAUTHORIZED_STATUS_CODE,
 } = require("../utils/errors");
 
 const createItem = (req, res) => {
@@ -45,6 +46,9 @@ const updateItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((e) => {
+      if (e.name === "ValidationError") {
+        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+      }
       if (e.name === "CastError") {
         return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
       }
@@ -82,7 +86,7 @@ const deleteItem = (req, res) => {
 const likeItem = (req, res) => {
   const { id } = req.params;
   if (!req.user || !req.user._id) {
-    return res.status(401).send({ message: "Authorization required" });
+    return res.status().send({ message: "Authorization required" });
   }
   const userId = req.user._id;
 
@@ -111,7 +115,9 @@ const likeItem = (req, res) => {
 const unlikeItem = (req, res) => {
   const { id } = req.params;
   if (!req.user || !req.user._id) {
-    return res.status(401).send({ message: "Authorization required" });
+    return res
+      .status(UNAUTHORIZED_STATUS_CODE)
+      .send({ message: "Authorization required" });
   }
   const userId = req.user._id;
 
