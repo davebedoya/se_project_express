@@ -63,7 +63,7 @@ const deleteItem = (req, res) => {
   const { id } = req.params;
   return ClothingItem.findByIdAndDelete(id)
     .orFail()
-    .then(() => res.status(204).send({}))
+    .then((item) => res.status(200).send(item))
     .catch((e) => {
       if (e.name === "CastError") {
         return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
