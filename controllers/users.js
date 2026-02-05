@@ -7,16 +7,10 @@ const {
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => {
-      res.status(200).send(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
-    });
-  console.log("IN CONTROLLER");
+    .then((users) => res.status(200).send(users))
+    .catch((e) => res
+      .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+      .send({ message: e.message }));
 };
 
 const createUser = (req, res) => {
@@ -24,14 +18,13 @@ const createUser = (req, res) => {
 
   User.create({ name, avatar })
     .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+    .catch((e) => {
+      if (e.name === "ValidationError") {
+        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: e.message });
     });
 };
 
@@ -40,19 +33,16 @@ const getUser = (req, res) => {
   User.findById(userId)
     .orFail()
     .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_STATUS_CODE).send({ message: err.message });
-      } else if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
-      } else {
-        return res
-          .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-          .send({ message: err.message });
+    .catch((e) => {
+      if (e.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND_STATUS_CODE).send({ message: e.message });
       }
+      if (e.name === "CastError") {
+        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: e.message });
     });
 };
 module.exports = { getUsers, createUser, getUser };
