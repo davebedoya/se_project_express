@@ -238,7 +238,7 @@ Suggested video flow:
 
 ## GitHub Repository
 
-- **Backend Repo:** https://github.com/davebedoya/se_project_express
+[Backend Repo](https://github.com/davebedoya/se_project_express)
 
 ---
 

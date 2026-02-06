@@ -86,7 +86,9 @@ const deleteItem = (req, res) => {
 const likeItem = (req, res) => {
   const { id } = req.params;
   if (!req.user || !req.user._id) {
-    return res.status().send({ message: "Authorization required" });
+    return res
+      .status(UNAUTHORIZED_STATUS_CODE)
+      .send({ message: "Authorization required" });
   }
   const userId = req.user._id;
 
