@@ -5,7 +5,7 @@ This repository contains the **backend server** for WTWR, built using **Node.js,
 
 The server provides a RESTful API for managing **users**, **clothing items**, and **likes**, with proper validation, error handling, and database persistence.
 
-This project was completed as **Sprint 12: Introduction to Back End** in the TripleTen Software Engineering program.
+This project was completed as **Sprint 13: Authentication & Authorization** in the TripleTen Software Engineering program.
 
 ---
 
@@ -15,22 +15,24 @@ At this stage, the backend focuses on building the foundation for a full-stack W
 
 - An Express server with a modular project structure
 - A MongoDB database connection using Mongoose
-- REST API routes for users and clothing items
 - Like / unlike functionality for clothing items
 - Centralized error handling with proper HTTP status codes
-- Temporary authorization middleware to simulate an authenticated user
+- JWT-based authentication and authorization middleware to protect routes
 
 ---
 
 ## Features
 
-- Create and fetch users
+- User registration (`POST /signup`) with hashed passwords using bcrypt
+- User login (`POST /signin`) with JWT token generation (7-day expiration)
+- Protected routes using authentication middleware
+- Retrieve and update current user (`GET /users/me`, `PATCH /users/me`)
 - Create, fetch, and delete clothing items
 - Like and unlike clothing items
-- MongoDB schemas with validation rules
+- Authorization rules (users can only delete their own items)
+- MongoDB schema validation
 - URL validation using the `validator` package
-- Consistent JSON responses
-- Robust error handling for invalid data, IDs, and missing resources
+- Centralized error handling with consistent JSON responses
 
 ---
 
@@ -45,6 +47,9 @@ At this stage, the backend focuses on building the foundation for a full-stack W
 - **validator** (URL validation)
 - **nodemon** (hot reload)
 - **Postman** (API testing)
+- **bcryptjs** (password hashing)
+- **jsonwebtoken (JWT)** (authentication tokens)
+- **cors** (Cross-Origin Resource Sharing)
 
 ---
 
@@ -55,7 +60,8 @@ se_project_express/
 ├── controllers/        # Route handler logic
 ├── routes/             # API route definitions
 ├── models/             # Mongoose schemas and models
-├── utils/              # Error codes and constants
+├── middlewares/        # Authentication middleware
+├── utils/              # Config and error codes
 ├── app.js              # Application entry point
 ├── package.json
 ├── .eslintrc.js
@@ -71,32 +77,30 @@ se_project_express/
 When the server starts, it connects to the MongoDB database:
 
 ```
-mongodb://127.0.0.1:27017/wtwr_db
+mongodb://localhost:127.0.0.1:27017/wtwr_db
 ```
 
 ---
 
 ## API Endpoints
 
+### Authentication
+
+- `POST /signup`  
+  Registers a new user. Passwords are hashed before storage.
+
+- `POST /signin`  
+  Authenticates a user and returns a JWT token.
+
+---
+
 ### Users
 
-- `GET /users`  
-  Returns all users.
+- `GET /users/me`  
+  Returns the currently authenticated user.
 
-- `GET /users/:userId`  
-  Returns a user by `_id`.
-
-- `POST /users`  
-  Creates a new user.
-
-**Request Body:**
-
-```json
-{
-  "name": "John Doe",
-  "avatar": "https://example.com/avatar.png"
-}
-```
+- `PATCH /users/me`  
+  Updates the current user's `name` and `avatar`.
 
 ---
 
@@ -119,9 +123,6 @@ mongodb://127.0.0.1:27017/wtwr_db
 }
 ```
 
-- `PUT /items/:id`  
-  Updates a clothing item by `_id`.
-
 - `DELETE /items/:id`  
   Deletes a clothing item by `_id`.
 
@@ -129,16 +130,8 @@ mongodb://127.0.0.1:27017/wtwr_db
 
 ### Likes
 
-- `PUT /items/:id/likes`  
-  Likes a clothing item.
-
-- `DELETE /items/:id/likes`  
-  Unlikes a clothing item.
-
-MongoDB operators used:
-
-- `$addToSet` — prevents duplicate likes
-- `$pull` — removes a like
+- `PUT /items/:id/likes` — Like a clothing item
+- `DELETE /items/:id/likes` — Unlike a clothing item
 
 ---
 
@@ -154,95 +147,18 @@ All error responses are returned in JSON format:
 
 Supported status codes:
 
-- **400** — invalid data or invalid ID (CastError / validation errors)
-- **404** — user or item not found
-- **500** — server error (non-existent route or server error): `"An error has occurred on the server."`
+- **400** — invalid data or invalid ID (validation errors / CastError)
+- **401** — unauthorized (invalid or missing token)
+- **403** — forbidden (attempting to modify another user's item)
+- **404** — resource not found
+- **409** — conflict (duplicate email registration)
+- **500** — server error
 
 Error codes are centralized in the `utils/` folder.
 
 ---
 
-## Running the Project
-
-### Install dependencies
-
-```bash
-npm install
-```
-
-### Start MongoDB
-
-Make sure MongoDB is running locally before starting the server.
-
-### Run the server
-
-```bash
-npm run start
-```
-
-### Run with hot reload
-
-```bash
-npm run dev
-```
-
-### Run ESLint
-
-```bash
-npm run lint
-```
-
----
-
-## Testing
-
-This project is tested using **Postman** and **GitHub Actions**.
-
-Before committing your code, update the `sprint.txt` file in the root directory with the sprint number:
-
-```txt
-12
-```
-
----
-
-## Screenshots & Demo (Recommended)
-
-Add screenshots or GIFs showing:
-
-- Postman requests for users and items
-- Successful like/unlike actions
-- MongoDB Compass collections (`users`, `clothingitems`)
-
-Example:
-
-```md
-![Postman Users](./images/postman-users.png)
-![Postman Items](./images/postman-items.png)
-```
-
----
-
 ## Project Demo Video
 
-📽️ Loom Demo: **(add your Loom link here)**
-
-Suggested video flow:
-
-- Start server with `npm run dev`
-- Show Postman requests (users, items, likes)
-- Show MongoDB Compass updates
-- Brief explanation of project structure
-
----
-
-## GitHub Repository
-
-[Backend Repo](https://github.com/davebedoya/se_project_express)
-
----
-
-## Disclaimer
-
-This backend uses a **temporary authorization middleware** with a hardcoded user ID.  
-User authentication and authorization will be implemented in future sprints.
+**[📽️ Loom Demo:](https://www.loom.com/share/171e7b8948bd418d91ef294ad8a723ae)**
+where I describe my project and some challenges I faced while building it.

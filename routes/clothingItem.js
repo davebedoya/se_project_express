@@ -4,7 +4,6 @@ const auth = require("../middlewares/auth");
 const {
   createItem,
   getItems,
-  // updateItem,
   deleteItem,
   likeItem,
   unlikeItem,
@@ -14,11 +13,14 @@ const {
 
 // Read
 router.get("/", getItems);
+
+//Auth
 router.use(auth);
+
 // Create
 router.post("/", createItem);
+
 // Update
-// router.put("/:id", updateItem);
 router.put("/:id/likes", likeItem);
 
 // Delete
