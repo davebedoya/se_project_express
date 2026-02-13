@@ -14,7 +14,7 @@ const {
 // Read
 router.get("/", getItems);
 
-//Auth
+// Auth
 router.use(auth);
 
 // Create
