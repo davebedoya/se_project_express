@@ -4,6 +4,7 @@ const {
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
   UNAUTHORIZED_STATUS_CODE,
+  FORBIDDEN_STATUS_CODE,
 } = require("../utils/errors");
 
 const createItem = (req, res) => {
@@ -64,10 +65,22 @@ const updateItem = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
-  const { id } = req.params;
-  return ClothingItem.findByIdAndDelete(id)
+  const { id: itemId } = req.params;
+  const userId = req.user._id;
+
+  ClothingItem.findById(itemId)
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => {
+      if (!item.owner.equals(userId)) {
+        return res
+          .status(FORBIDDEN_STATUS_CODE)
+          .send({ message: "item owner Id does not match  the user id" });
+      } else {
+        return ClothingItem.findByIdAndDelete(itemId)
+          .orFail()
+          .then((item) => res.status(200).send(item));
+      }
+    })
     .catch((e) => {
       if (e.name === "CastError") {
         return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
