@@ -1,5 +1,3 @@
-// middleware/auth.js
-
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const { UNAUTHORIZED_STATUS_CODE } = require("../utils/errors");
