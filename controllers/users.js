@@ -1,6 +1,6 @@
-const User = require("../models/user");
 const jwt = require("jsonwebtoken"); // importing the jsonwebtoken module
 const bcrypt = require("bcryptjs");
+const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const {
   BAD_REQUEST_STATUS_CODE,
@@ -89,7 +89,6 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-//TODO
 const updateCurrentUser = (req, res) => {
   const userId = req.user._id;
   const { name, avatar } = req.body;
@@ -100,9 +99,7 @@ const updateCurrentUser = (req, res) => {
     { new: true, runValidators: true }
   )
     .orFail()
-    .then((user) => {
-      return res.status(200).send(user);
-    })
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND_STATUS_CODE).send({ message: err.message });

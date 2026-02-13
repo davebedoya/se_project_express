@@ -75,11 +75,10 @@ const deleteItem = (req, res) => {
         return res
           .status(FORBIDDEN_STATUS_CODE)
           .send({ message: "item owner Id does not match  the user id" });
-      } else {
-        return ClothingItem.findByIdAndDelete(itemId)
-          .orFail()
-          .then((item) => res.status(200).send(item));
       }
+      return ClothingItem.findByIdAndDelete(itemId)
+        .orFail()
+        .then(() => res.status(200).send(item));
     })
     .catch((e) => {
       if (e.name === "CastError") {
