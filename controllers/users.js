@@ -40,35 +40,55 @@ const login = (req, res) => {
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
-  bcrypt.hash(password, 10).then((hash) =>
-    User.create({
-      name,
-      avatar,
-      email,
-      password: hash, // adding the hash to the database
-    })
 
-      .then((user) => {
-        const userObj = user.toObject();
-        delete userObj.password; // not being returned to the client
-        res.status(201).send(userObj);
+  // Validate BEFORE hashing so /signup never hangs and returns 400 for invalid input
+  if (!email || !password || typeof password !== "string") {
+    return res
+      .status(BAD_REQUEST_STATUS_CODE)
+      .send({ message: "Invalid data" });
+  }
+
+  return bcrypt
+    .hash(password, 10)
+    .then((hash) =>
+      User.create({
+        name,
+        avatar,
+        email,
+        password: hash, // store hash only
       })
-      .catch((err) => {
-        if (err.code === 11000) {
+        .then((user) => {
+          const userObj = user.toObject();
+          delete userObj.password; // never return the password hash
+          res.status(201).send(userObj);
+        })
+        .catch((err) => {
+          if (err.code === 11000) {
+            return res
+              .status(CONFLICT_STATUS_CODE)
+              .send({ message: "Email already exists" });
+          }
+          if (err.name === "ValidationError") {
+            return res
+              .status(BAD_REQUEST_STATUS_CODE)
+              .send({ message: "Invalid data" });
+          }
           return res
-            .status(CONFLICT_STATUS_CODE)
-            .send({ message: "Email already exists" });
-        }
-        if (err.name === "ValidationError") {
-          return res
-            .status(BAD_REQUEST_STATUS_CODE)
-            .send({ message: "Invalid data" });
-        }
+            .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+            .send({ message: "An error has occurred on the server." });
+        })
+    )
+    .catch((err) => {
+      // If password is undefined, null, not a string, missing then throw an error
+      if (err.name === "ValidationError") {
         return res
-          .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-          .send({ message: "An error has occurred on the server." });
-      })
-  );
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid data" });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: "An error has occurred on the server." });
+    });
 };
 
 const getCurrentUser = (req, res) => {
@@ -78,10 +98,14 @@ const getCurrentUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((e) => {
       if (e.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_STATUS_CODE).send({ message: e.message });
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "User not found" });
       }
       if (e.name === "CastError") {
-        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid ID" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
@@ -102,7 +126,9 @@ const updateCurrentUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_STATUS_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "User not found" });
       }
       if (err.name === "ValidationError") {
         return res

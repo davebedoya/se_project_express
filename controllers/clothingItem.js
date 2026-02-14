@@ -17,7 +17,9 @@ const createItem = (req, res) => {
     })
     .catch((e) => {
       if (e.name === "ValidationError") {
-        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid data" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
@@ -48,10 +50,14 @@ const updateItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((e) => {
       if (e.name === "ValidationError") {
-        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid data" });
       }
       if (e.name === "CastError") {
-        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid ID" });
       }
       if (e.name === "DocumentNotFoundError") {
         return res
@@ -82,7 +88,9 @@ const deleteItem = (req, res) => {
     })
     .catch((e) => {
       if (e.name === "CastError") {
-        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid ID" });
       }
       if (e.name === "DocumentNotFoundError") {
         return res
@@ -113,7 +121,9 @@ const likeItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((e) => {
       if (e.name === "CastError") {
-        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid ID" });
       }
       if (e.name === "DocumentNotFoundError") {
         return res
@@ -144,7 +154,9 @@ const unlikeItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((e) => {
       if (e.name === "CastError") {
-        return res.status(BAD_REQUEST_STATUS_CODE).send({ message: e.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid ID" });
       }
       if (e.name === "DocumentNotFoundError") {
         return res
