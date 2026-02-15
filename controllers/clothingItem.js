@@ -3,7 +3,6 @@ const {
   BAD_REQUEST_STATUS_CODE,
   NOT_FOUND_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
-  UNAUTHORIZED_STATUS_CODE,
   FORBIDDEN_STATUS_CODE,
 } = require("../utils/errors");
 
@@ -80,7 +79,7 @@ const deleteItem = (req, res) => {
       if (!item.owner.equals(userId)) {
         return res
           .status(FORBIDDEN_STATUS_CODE)
-          .send({ message: "item owner Id does not match  the user id" });
+          .send({ message: "Forbidden: you can only delete your own items" });
       }
       return ClothingItem.findByIdAndDelete(itemId)
         .orFail()
@@ -105,11 +104,6 @@ const deleteItem = (req, res) => {
 
 const likeItem = (req, res) => {
   const { id } = req.params;
-  if (!req.user || !req.user._id) {
-    return res
-      .status(UNAUTHORIZED_STATUS_CODE)
-      .send({ message: "Authorization required" });
-  }
   const userId = req.user._id;
 
   return ClothingItem.findByIdAndUpdate(
@@ -138,11 +132,6 @@ const likeItem = (req, res) => {
 
 const unlikeItem = (req, res) => {
   const { id } = req.params;
-  if (!req.user || !req.user._id) {
-    return res
-      .status(UNAUTHORIZED_STATUS_CODE)
-      .send({ message: "Authorization required" });
-  }
   const userId = req.user._id;
 
   return ClothingItem.findByIdAndUpdate(

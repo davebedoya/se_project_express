@@ -42,7 +42,7 @@ const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   // Validate BEFORE hashing so /signup never hangs and returns 400 for invalid input
-  if (!email || !password || typeof password !== "string") {
+  if (!email || !password) {
     return res
       .status(BAD_REQUEST_STATUS_CODE)
       .send({ message: "Invalid data" });
