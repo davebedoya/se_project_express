@@ -13,3 +13,8 @@ node_modules
 .DS_Store
 .idea
 .vscode
+
+# request.log
+# error.log
+
+*.log
