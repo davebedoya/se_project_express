@@ -165,7 +165,10 @@ Frontend Repository:
 https://github.com/davebedoya/se_project_react
 
 Project Demo Video:
+
+Check out these videos, where I describe my project
+and some challenges I faced while building it:
+
 [Previous Version:](https://www.loom.com/share/171e7b8948bd418d91ef294ad8a723ae)
-where I describe my project and some challenges I faced while building it.
 
 [Final Version:](https://www.loom.com/share/88be8753583d4e66b9f5ecc422823036)
