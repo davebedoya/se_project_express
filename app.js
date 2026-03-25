@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 require("dotenv").config();
+const { errors } = require("celebrate");
 
 const mainRouter = require("./routes/index");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
-const { errors } = require("celebrate");
 const errorHandler = require("./middlewares/error-handler");
 
 const { PORT = 3001 } = process.env;
@@ -40,5 +40,5 @@ app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`);
+  // console.log(`listening on port ${PORT}`);
 });

@@ -91,7 +91,7 @@ const createUser = (req, res, next) => {
           // return res
           //   .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
           //   .send({ message: "An error has occurred on the server." });
-          next(e);
+          return next(e);
         })
     )
     .catch((e) => {
@@ -105,7 +105,7 @@ const createUser = (req, res, next) => {
       // return res
       //   .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
       //   .send({ message: "An error has occurred on the server." });
-      next(e);
+      return next(e);
     });
 };
 
@@ -130,7 +130,7 @@ const getCurrentUser = (req, res, next) => {
       // return res
       //   .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
       //   .send({ message: "An error has occurred on the server." });
-      next(e);
+      return next(e);
     });
 };
 
@@ -161,7 +161,7 @@ const updateCurrentUser = (req, res, next) => {
       // return res
       //   .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
       //   .send({ message: "An error has occurred on the server." });
-      next(e);
+      return next(e);
     });
 };
 

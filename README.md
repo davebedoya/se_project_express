@@ -156,9 +156,14 @@ Supported status codes:
 
 Error codes are centralized in the `utils/` folder.
 
----
+## Access to Application
 
-## Project Demo Video
+Backend API:
+https://api.wtwr.ubeagle.com
 
-**[📽️ Loom Demo:](https://www.loom.com/share/171e7b8948bd418d91ef294ad8a723ae)**
+Frontend Repository:
+https://github.com/davebedoya/se_project_react
+
+Project Demo Video:
+[📽️ Loom Demo:](https://www.loom.com/share/171e7b8948bd418d91ef294ad8a723ae)
 where I describe my project and some challenges I faced while building it.
